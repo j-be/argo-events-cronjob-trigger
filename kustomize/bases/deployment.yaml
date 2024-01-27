@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cronjob-trigger
+  labels:
+    app: cronjob-trigger
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: cronjob-trigger
+      labels:
+        app: cronjob-trigger
+    spec:
+      serviceAccountName: cronjob-trigger-sa
+      containers:
+        - name: cronjob-trigger
+          image: cronjob-trigger
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: cronjob-trigger
