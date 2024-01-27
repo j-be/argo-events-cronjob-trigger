@@ -59,13 +59,14 @@ jobs:
         platforms: linux/arm64
         tags: dummy-tag:arm64
 
-    # Tag
-    - name: Bump version and push tag
-      id: tag
+    # Determine version
+    - name: Bump version
+      id: version
       uses: anothrNick/github-tag-action@1.67.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: true
+        DRY_RUN: true
 
     # Push
     - name: Push both
@@ -73,5 +74,14 @@ jobs:
       with:
         push: true
         platforms: linux/amd64,linux/arm64
-        tags: ghcr.io/j-be/argo-events-cronjob-trigger:${{ steps.tag.outputs.new_tag }}
+        tags: ghcr.io/j-be/argo-events-cronjob-trigger:${{ steps.version.outputs.new_tag }}
         labels: ${{ steps.meta.outputs.labels }}
+
+    # Tag
+    - name: Bump version and push tag
+      id: tag
+      uses: anothrNick/github-tag-action@1.67.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        DRY_RUN: true
