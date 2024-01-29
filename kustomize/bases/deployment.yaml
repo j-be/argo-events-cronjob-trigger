@@ -16,7 +16,6 @@ spec:
       containers:
         - name: cronjob-trigger
           image: cronjob-trigger
-      restartPolicy: Always
   selector:
     matchLabels:
       app: cronjob-trigger
