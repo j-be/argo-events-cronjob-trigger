@@ -8,6 +8,7 @@ import (
 
 	"github.com/VaibhavPage/tekton-cd-trigger/proto"
 	"github.com/ghodss/yaml"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	batch "k8s.io/api/batch/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -28,7 +29,7 @@ func (t *CronJobTrigger) FetchResource(ctx context.Context, in *proto.FetchResou
 
 	namespace := in_resource["namespace"]
 	cronjobName := in_resource["cronjob"]
-	fmt.Printf("the cronjob name is: %s/%s\n", namespace, cronjobName)
+	log.Info().Str("name", cronjobName).Str("namespace", namespace).Msg("Fetching CronJob")
 
 	// Fetch CronJob
 	result := t.client.Get().Resource("cronjobs").Namespace(namespace).Name(cronjobName).Do(ctx)
@@ -74,7 +75,7 @@ func (t *CronJobTrigger) Execute(ctx context.Context, in *proto.ExecuteRequest) 
 	}
 
 	namespace := job.ObjectMeta.Namespace
-	fmt.Printf("creating Job %s/%s\n", namespace, job.ObjectMeta.GenerateName)
+	log.Info().Str("namespace", namespace).Str("name", job.ObjectMeta.GenerateName).Msg("Creating Job")
 	result := t.client.Post().Resource("jobs").Namespace(namespace).Body(job).Do(ctx)
 	if result.Error() != nil {
 		return nil, result.Error()
@@ -129,7 +130,7 @@ func main() {
 	}
 
 	trigger := &CronJobTrigger{client}
-	fmt.Println("starting trigger server")
+	log.Info().Str("port", port).Msg("starting trigger server")
 
 	// Start server
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))

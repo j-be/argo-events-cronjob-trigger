@@ -5,6 +5,7 @@ go 1.21.5
 require (
 	github.com/VaibhavPage/tekton-cd-trigger v1.0.0
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
+	github.com/rs/zerolog v1.31.0
 	google.golang.org/grpc v1.61.0
 	k8s.io/api v0.29.1
 	k8s.io/apimachinery v0.29.1
@@ -19,6 +20,8 @@ require (
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
