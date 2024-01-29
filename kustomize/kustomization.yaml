@@ -1,4 +1,0 @@
-resources:
-  - bases/deployment.yaml
-  - bases/service.yaml
-  - bases/serviceaccount.yaml
