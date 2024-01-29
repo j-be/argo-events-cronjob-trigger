@@ -16,6 +16,17 @@ spec:
       containers:
         - name: cronjob-trigger
           image: cronjob-trigger
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
   selector:
     matchLabels:
       app: cronjob-trigger
