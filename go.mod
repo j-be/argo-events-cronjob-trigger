@@ -4,9 +4,9 @@ go 1.21.5
 
 require (
 	github.com/VaibhavPage/tekton-cd-trigger v1.0.0
-	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
 	github.com/rs/zerolog v1.31.0
 	google.golang.org/grpc v1.61.0
+	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.29.1
 	k8s.io/apimachinery v0.29.1
 	k8s.io/client-go v0.29.1

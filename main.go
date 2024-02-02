@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/VaibhavPage/tekton-cd-trigger/proto"
-	"github.com/ghodss/yaml"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
+	"gopkg.in/yaml.v3"
 	batch "k8s.io/api/batch/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/scheme"
