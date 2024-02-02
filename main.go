@@ -45,14 +45,24 @@ func (t *CronJobTrigger) FetchResource(ctx context.Context, in *triggers.FetchRe
 
 	// Create Job
 	job := batch.Job{
-		TypeMeta: v1.TypeMeta{
-			Kind:       "Job",
-			APIVersion: cronjob.TypeMeta.APIVersion,
-		},
 		Spec: cronjob.Spec.JobTemplate.Spec,
 		ObjectMeta: v1.ObjectMeta{
 			Namespace:    namespace,
 			GenerateName: fmt.Sprintf("%s-argo-events-", cronjob.ObjectMeta.Name),
+			OwnerReferences: []v1.OwnerReference{
+				{
+					/*
+					 * APIVersion and Kind need to be hardcoded for the time being. See:
+					 *   https://github.com/kubernetes/client-go/issues/861
+					 *   https://github.com/kubernetes/kubernetes/issues/3030
+					 *   https://github.com/kubernetes/kubernetes/issues/80609
+					 */
+					APIVersion: "batch/v1",
+					Kind:       "CronJob",
+					Name:       cronjob.GetName(),
+					UID:        cronjob.GetUID(),
+				},
+			},
 		},
 	}
 
