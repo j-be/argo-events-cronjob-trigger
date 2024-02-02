@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/VaibhavPage/tekton-cd-trigger/proto"
+	"github.com/argoproj/argo-events/sensors/triggers"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"gopkg.in/yaml.v3"
@@ -21,7 +21,7 @@ type CronJobTrigger struct {
 }
 
 // FetchResource fetches the resource to be triggered.
-func (t *CronJobTrigger) FetchResource(ctx context.Context, in *proto.FetchResourceRequest) (*proto.FetchResourceResponse, error) {
+func (t *CronJobTrigger) FetchResource(ctx context.Context, in *triggers.FetchResourceRequest) (*triggers.FetchResourceResponse, error) {
 	var in_resource map[string]string
 	if err := yaml.Unmarshal(in.Resource, &in_resource); err != nil {
 		return nil, err
@@ -62,13 +62,13 @@ func (t *CronJobTrigger) FetchResource(ctx context.Context, in *proto.FetchResou
 		return nil, err
 	}
 
-	return &proto.FetchResourceResponse{
+	return &triggers.FetchResourceResponse{
 		Resource: resource,
 	}, nil
 }
 
 // Execute executes the requested trigger resource.
-func (t *CronJobTrigger) Execute(ctx context.Context, in *proto.ExecuteRequest) (*proto.ExecuteResponse, error) {
+func (t *CronJobTrigger) Execute(ctx context.Context, in *triggers.ExecuteRequest) (*triggers.ExecuteResponse, error) {
 	job := new(batch.Job)
 	if err := yaml.Unmarshal(in.Resource, job); err != nil {
 		return nil, err
@@ -81,14 +81,14 @@ func (t *CronJobTrigger) Execute(ctx context.Context, in *proto.ExecuteRequest) 
 		return nil, result.Error()
 	}
 
-	return &proto.ExecuteResponse{
+	return &triggers.ExecuteResponse{
 		Response: []byte("success"),
 	}, nil
 }
 
 // ApplyPolicy applies policies on the trigger execution result.
-func (t *CronJobTrigger) ApplyPolicy(ctx context.Context, in *proto.ApplyPolicyRequest) (*proto.ApplyPolicyResponse, error) {
-	return &proto.ApplyPolicyResponse{
+func (t *CronJobTrigger) ApplyPolicy(ctx context.Context, in *triggers.ApplyPolicyRequest) (*triggers.ApplyPolicyResponse, error) {
+	return &triggers.ApplyPolicyResponse{
 		Success: true,
 		Message: "success",
 	}, nil
@@ -139,7 +139,7 @@ func main() {
 	}
 
 	srv := grpc.NewServer()
-	proto.RegisterTriggerServer(srv, trigger)
+	triggers.RegisterTriggerServer(srv, trigger)
 	if err := srv.Serve(lis); err != nil {
 		panic(err)
 	}
