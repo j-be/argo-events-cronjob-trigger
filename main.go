@@ -34,14 +34,18 @@ func (t *CronJobTrigger) FetchResource(ctx context.Context, in *triggers.FetchRe
 	// Fetch CronJob
 	result := t.client.Get().Resource("cronjobs").Namespace(namespace).Name(cronjobName).Do(ctx)
 	if result.Error() != nil {
+		log.Error().AnErr("err", result.Error()).Msg("Cannot fetch CronJob")
 		return nil, result.Error()
 	}
 
 	// Parse CronJob
 	cronjob := new(batch.CronJob)
 	if err := result.Into(cronjob); err != nil {
+		log.Error().AnErr("err", err).Msg("Cannot parse CronJob")
 		return nil, result.Error()
 	}
+
+	log.Info().Str("name", cronjob.GetName()).Str("uid", string(cronjob.GetUID())).Msg("CronJob fetched, building Job")
 
 	// Create Job
 	job := batch.Job{
@@ -69,9 +73,11 @@ func (t *CronJobTrigger) FetchResource(ctx context.Context, in *triggers.FetchRe
 	// Marshal Job
 	resource, err := yaml.Marshal(job)
 	if err != nil {
+		log.Error().AnErr("err", err).Msg("Cannot marshal Job")
 		return nil, err
 	}
 
+	log.Info().Msg("Job built and marshaled, FetchResource done")
 	return &triggers.FetchResourceResponse{
 		Resource: resource,
 	}, nil
@@ -81,6 +87,7 @@ func (t *CronJobTrigger) FetchResource(ctx context.Context, in *triggers.FetchRe
 func (t *CronJobTrigger) Execute(ctx context.Context, in *triggers.ExecuteRequest) (*triggers.ExecuteResponse, error) {
 	job := new(batch.Job)
 	if err := yaml.Unmarshal(in.Resource, job); err != nil {
+		log.Error().AnErr("err", err).Msg("Cannot unmarshal Job")
 		return nil, err
 	}
 
@@ -88,9 +95,11 @@ func (t *CronJobTrigger) Execute(ctx context.Context, in *triggers.ExecuteReques
 	log.Info().Str("namespace", namespace).Str("name", job.ObjectMeta.GenerateName).Msg("Creating Job")
 	result := t.client.Post().Resource("jobs").Namespace(namespace).Body(job).Do(ctx)
 	if result.Error() != nil {
+		log.Error().AnErr("err", result.Error()).Msg("Cannot create Job")
 		return nil, result.Error()
 	}
 
+	log.Info().Msg("Job creared, Execute done")
 	return &triggers.ExecuteResponse{
 		Response: []byte("success"),
 	}, nil
