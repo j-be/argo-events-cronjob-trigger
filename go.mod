@@ -4,7 +4,7 @@ go 1.21.5
 
 require (
 	github.com/argoproj/argo-events v1.9.0
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	google.golang.org/grpc v1.61.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.29.1
