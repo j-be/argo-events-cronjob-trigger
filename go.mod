@@ -6,7 +6,7 @@ toolchain go1.22.2
 require (
 	github.com/argoproj/argo-events v1.9.1
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
-	github.com/rs/zerolog v1.32.0
+	github.com/rs/zerolog v1.33.0
 	google.golang.org/grpc v1.64.0
 	k8s.io/api v0.30.1
 	k8s.io/apimachinery v0.30.1
