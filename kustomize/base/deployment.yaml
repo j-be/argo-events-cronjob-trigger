@@ -21,6 +21,11 @@ spec:
               memory: 16Mi
             limits:
               memory: 16Mi
+          livenessProbe:
+            grpc:
+              port: 9000
+            initialDelaySeconds: 1
+            failureThreshold: 1
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

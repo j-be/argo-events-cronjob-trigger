@@ -10,6 +10,8 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	grpcHealth "google.golang.org/grpc/health/grpc_health_v1"
 	batch "k8s.io/api/batch/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -17,8 +19,11 @@ import (
 )
 
 type CronJobTrigger struct {
-	client *rest.RESTClient
+	client      *rest.RESTClient
+	healthCheck *health.Server
 }
+
+const healthService = ""
 
 // FetchResource fetches the resource to be triggered.
 func (t *CronJobTrigger) FetchResource(ctx context.Context, in *triggers.FetchResourceRequest) (*triggers.FetchResourceResponse, error) {
@@ -34,7 +39,8 @@ func (t *CronJobTrigger) FetchResource(ctx context.Context, in *triggers.FetchRe
 	// Fetch CronJob
 	result := t.client.Get().Resource("cronjobs").Namespace(namespace).Name(cronjobName).Do(ctx)
 	if result.Error() != nil {
-		log.Error().AnErr("err", result.Error()).Msg("Cannot fetch CronJob")
+		log.Error().AnErr("err", result.Error()).Msg("Cannot fetch CronJob. Tripping HealthCheck!")
+		t.healthCheck.SetServingStatus(healthService, grpcHealth.HealthCheckResponse_NOT_SERVING)
 		return nil, result.Error()
 	}
 
@@ -95,7 +101,8 @@ func (t *CronJobTrigger) Execute(ctx context.Context, in *triggers.ExecuteReques
 	log.Info().Str("namespace", namespace).Str("name", job.ObjectMeta.GenerateName).Msg("Creating Job")
 	result := t.client.Post().Resource("jobs").Namespace(namespace).Body(job).Do(ctx)
 	if result.Error() != nil {
-		log.Error().AnErr("err", result.Error()).Msg("Cannot create Job")
+		log.Error().AnErr("err", result.Error()).Msg("Cannot create Job. Tripping HealthCheck!")
+		t.healthCheck.SetServingStatus(healthService, grpcHealth.HealthCheckResponse_NOT_SERVING)
 		return nil, result.Error()
 	}
 
@@ -148,7 +155,10 @@ func main() {
 		panic(err)
 	}
 
-	trigger := &CronJobTrigger{client}
+	trigger := &CronJobTrigger{
+		client,
+		health.NewServer(),
+	}
 	log.Info().Str("port", port).Msg("starting trigger server")
 
 	// Start server
@@ -159,6 +169,8 @@ func main() {
 
 	srv := grpc.NewServer()
 	triggers.RegisterTriggerServer(srv, trigger)
+	grpcHealth.RegisterHealthServer(srv, trigger.healthCheck)
+
 	if err := srv.Serve(lis); err != nil {
 		panic(err)
 	}

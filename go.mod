@@ -1,6 +1,7 @@
 module github.com/j-be/argo-events-cronjob-trigger
 
-go 1.21.5
+go 1.22.0
+
 toolchain go1.22.4
 
 require (
