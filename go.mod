@@ -1,16 +1,16 @@
 module github.com/j-be/argo-events-cronjob-trigger
 
 go 1.22.0
-toolchain go1.23.4
+toolchain go1.24.1
 
 require (
 	github.com/argoproj/argo-events v1.9.2
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
 	github.com/rs/zerolog v1.33.0
 	google.golang.org/grpc v1.71.0
-	k8s.io/api v0.32.2
-	k8s.io/apimachinery v0.32.2
-	k8s.io/client-go v0.32.2
+	k8s.io/api v0.32.3
+	k8s.io/apimachinery v0.32.3
+	k8s.io/client-go v0.32.3
 )
 
 require (
