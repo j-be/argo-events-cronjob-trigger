@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/argoproj/argo-events v1.9.2
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
-	github.com/rs/zerolog v1.34.0
+	github.com/rs/zerolog v1.35.0
 	google.golang.org/grpc v1.79.3
 	k8s.io/api v0.35.3
 	k8s.io/apimachinery v0.35.3
@@ -64,7 +64,7 @@ require (
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/minio/minio-go/v7 v7.0.70 // indirect
