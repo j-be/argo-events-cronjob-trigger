@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/argoproj/argo-events v1.9.2
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
-	github.com/rs/zerolog v1.35.0
+	github.com/rs/zerolog v1.35.1
 	google.golang.org/grpc v1.80.0
 	k8s.io/api v0.36.0
 	k8s.io/apimachinery v0.36.0
