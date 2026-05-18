@@ -1,0 +1,26 @@
+name: Build
+
+on:
+  pull_request:
+
+jobs:
+  buildx:
+    name: Build
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    # Setup Buildx
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        platforms: linux/amd64
+
+    # Build
+    - name: Build
+      uses: docker/build-push-action@v4
+      with:
+        platforms: linux/amd64
