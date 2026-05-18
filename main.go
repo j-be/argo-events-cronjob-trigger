@@ -58,7 +58,7 @@ func (t *CronJobTrigger) FetchResource(ctx context.Context, in *triggers.FetchRe
 		Spec: cronjob.Spec.JobTemplate.Spec,
 		ObjectMeta: v1.ObjectMeta{
 			Namespace:    namespace,
-			GenerateName: fmt.Sprintf("%s-argo-events-", cronjob.ObjectMeta.Name),
+			GenerateName: fmt.Sprintf("%s-argo-events-", cronjob.Name),
 			OwnerReferences: []v1.OwnerReference{
 				{
 					/*
@@ -97,7 +97,7 @@ func (t *CronJobTrigger) Execute(ctx context.Context, in *triggers.ExecuteReques
 		return nil, err
 	}
 
-	namespace := job.ObjectMeta.Namespace
+	namespace := job.Namespace
 	log.Info().Str("namespace", namespace).Str("name", job.ObjectMeta.GenerateName).Msg("Creating Job")
 	result := t.client.Post().Resource("jobs").Namespace(namespace).Body(job).Do(ctx)
 	if result.Error() != nil {
